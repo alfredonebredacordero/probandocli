@@ -1,93 +1,110 @@
-# Tarea X: Nombre de la tarea :school_satchel:
+
+=======
+ Tarea 1
+
+Como ejecutar
+Para abrir es necesario hacer: py -3.12 main.py
+Main.py
 
 
-Un buen ```README.md``` puede marcar una gran diferencia en la facilidad con la que corregimos una tarea, y consecuentemente cómo funciona su programa, por lo en general, entre más ordenado y limpio sea éste, mejor será 
+Clase MenuJuego maneja el menu principal e inicialización del juego
 
-Para nuestra suerte, GitHub soporta el formato [MarkDown](https://es.wikipedia.org/wiki/Markdown), el cual permite utilizar una amplia variedad de estilos de texto, tanto para resaltar cosas importantes como para separar ideas o poner código de manera ordenada ([pueden ver casi todas las funcionalidades que incluye aquí](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet))
+-init define usuario, juego, data_folder y config_folder como atributos principales
 
-Un buen ```README.md``` no tiene por que ser muy extenso tampoco, hay que ser **concisos** (a menos que lo consideren necesario) pero **tampoco pueden** faltar cosas. Lo importante es que sea claro y limpio 
+-obtener_configuraciones_disponibles busca archivos config*.txt y configuracion*.txt usando glob
 
-**Dejar claro lo que NO pudieron implementar y lo que no funciona a la perfección. Esto puede sonar innecesario pero permite que el ayudante se enfoque en lo que sí podría subir su puntaje.**
+-mostrar_configuraciones_disponibles muestra lista numerada de configs y pide selección al usuario
 
-## Consideraciones generales :octocat:
+-mostrar_menu despliega opciones principales con info de usuario, puntaje y tableros resueltos-
 
-<Descripción de lo que hace y que **_no_** hace la tarea que entregaron junto
-con detalles de último minuto y consideraciones como por ejemplo cambiar algo
-en cierta línea del código o comentar una función>
+-ejecutar_menu es el loop principal que maneja todas las opciones del menu
 
-### Cosas implementadas y no implementadas :white_check_mark: :x:
+-iniciar_juego_nuevo pide nombre usuario, selecciona config y crea nueva instancia DCCasillas
 
-* <Nombre item pauta<sub>1</sub>>: Hecha completa
-* <Nombre item pauta<sub>2</sub>>: Me faltó hacer <insertar qué cosa faltó>
-    * <Nombre subitem pauta<sub>2.1</sub>>: Hecha completa 
-    * <Nombre subitem pauta<sub>2.2</sub>>: Me faltó hacer <insertar qué cosa faltó>
-    * ...
-* <Nombre item pauta<sub>3</sub>>: Me faltó hacer <insertar qué cosa faltó>
-* ...
-* <Nombre item pauta<sub>n</sub>>: Me faltó hacer <insertar qué cosa faltó>
+-continuar_juego permite retomar partida existente y cambiar de tablero si se desea
 
-## Ejecución :computer:
-El módulo principal de la tarea a ejecutar es  ```archivo.py```. Además se debe crear los siguientes archivos y directorios adicionales:
-1. ```archivo.ext``` en ```ubicación```
-2. ```directorio``` en ```ubicación```
-3. ...
+-guardar_estado llama al método guardar_estado del juego actual para persistir datos
+
+-recuperar_estado carga estado previo usando primera config disponible como base
+
+-salir_programa muestra mensaje de despedida y termina la ejecución
+
+ir_al_menu_acciones crea instancia MenuAcciones y transfiere el control
 
 
-## Librerías :books:
-### Librerías externas utilizadas
-La lista de librerías externas que utilicé fue la siguiente:
-
-1. ```librería_1```: ```función() / módulo```
-2. ```librería_2```: ```función() / módulo``` (debe instalarse)
-3. ...
-
-### Librerías propias
-Por otro lado, los módulos que fueron creados fueron los siguientes:
-
-1. ```librería_1```: Contiene a ```ClaseA```, ```ClaseB```, (ser general, tampoco es necesario especificar cada una)...
-2. ```librería_2```: Hecha para <insertar descripción **breve** de lo que hace o qué contiene>
-3. ...
-
-## Supuestos y consideraciones adicionales :thinking:
-Los supuestos que realicé durante la tarea son los siguientes:
-
-1. <Descripción/consideración 1 y justificación del por qué es válido/a> 
-2. <Descripción/consideración 2 y justificación del por qué es válido/a>
-3. ...
-
-PD: <una última consideración (de ser necesaria) o comentario hecho anteriormente que se quiera **recalcar**>
+Clase MenuAcciones maneja las acciones dentro del juego activo:
 
 
--------
+-init recibe instancia DCCasillas para trabajar con el juego actual
+
+-mostrar_menu despliega info del usuario, tablero actual y opciones de acción
+
+-ejecutar_menu loop que maneja opciones de mostrar, modificar, verificar y encontrar solución
+
+-mostrar_tablero llama al método mostrar_tablero del tablero actual
+
+-modificar_casilla pide coordenadas y llama modificar_casilla del tablero correspondiente
+
+
+-verificar_solucion valida si tablero esta resuelto y avanza al siguiente automáticamente
+
+-encontrar_solucion usa algoritmo automático para resolver tablero y agrega puntaje extra
+
+-_mostrar_sumas_actuales método auxiliar que muestra debug de sumas vs objetivos
+
+DCCasillas
+
+
+-init inicializa usuario, puntaje, tablero_actual y lista de tableros vacía
+
+--_cargar_configuracion lee archivo config, extrae número de tableros y carga cada uno
+
+-Valida existencia de archivos y maneja errores de carga de tableros
+
+-abrir_tablero establece tablero_actual al numero especificado si es válido
+
+-guardar_estado crea archivo en data/ con info completa de todos los tableros
+
+-Guarda movimientos, dimensiones y configuración de cada tablero incluyendo casillas desabilitadas
+
+-recuperar_estado lee archivo de usuario desde data/ y reconstruye estado completo
+
+-Valida formato de archivo y crea nuevos objetos Tablero con info guardada
+
+-obtener_tablero_actual retorna instancia del tablero activo o None si no hay
+
+-contar_tableros_resueltos cuenta cuántos tableros tienen estado True resuelto
+
+-actualizar_puntaje suma movimientos de todos los tableros resueltos para puntaje total
+
+
+Tablero
+
+-init inicializa tablero vacío con movimientos 0, estado False y casillas_deshabilitadas vacío
+
+-cargar_tablero lee archivo config, extrae dimensiones y carga configuración completa del tablero
+
+-Procesa casillas con X como deshabilitadas y las agrega al set correspondiente
+
+-mostrar_tablero crea versión display reemplazando casillas deshabilitadas con puntos para visualizer
+
+-modificar_casilla valida coordenadas, cambia estado de habilitada/deshabilitada y actualiza movimientos
+
+-Agrega o quita casilla del set deshabilitadas según estado actual
+
+-validar verifica que sumas de filas y columnas coincidan con objetivos establecidos
+
+-Solo cuenta casillas habilitadas para calcular sumas y actualiza estado del tablero
+
+-encontrar_solucion implementa backtracking para encontrar configuración que resuelva el tablero
+
+-_backtrack función recursiva que prueba todas las combinaciones posibles de Casillas
+
+-_validar_configuracion verifica si configuración específica de casillas resuelve el tablero correctamente
+
+-_copiar_tablero crea copia profunda del tablero actual para no modificar el original
 
 
 
-**EXTRA:** si van a explicar qué hace específicamente un método, no lo coloquen en el README mismo. Pueden hacerlo directamente comentando el método en su archivo. Por ejemplo:
-
-```python
-class Corrector:
-
-    def __init__(self):
-          pass
-
-    # Este método coloca un 6 en las tareas que recibe
-    def corregir(self, tarea):
-        tarea.nota  = 6
-        return tarea
-```
-
-Si quieren ser más formales, pueden usar alguna convención de documentación. Google tiene la suya, Python tiene otra y hay muchas más. La de Python es la [PEP287, conocida como reST](https://www.python.org/dev/peps/pep-0287/). Lo más básico es documentar así:
-
-```python
-def funcion(argumento):
-    """
-    Mi función hace X con el argumento
-    """
-    return argumento_modificado
-```
-Lo importante es que expliquen qué hace la función y que si saben que alguna parte puede quedar complicada de entender o tienen alguna función mágica usen los comentarios/documentación para que el ayudante entienda sus intenciones.
-
-## Referencias de código externo :book:
-
-Para realizar mi tarea saqué código de:
-1. \<link de código>: este hace \<lo que hace> y está implementado en el archivo <nombre.py> en las líneas <número de líneas> y hace <explicación breve de que hace>
+-
+>>>>>>> 5d6131a (tarea1)
