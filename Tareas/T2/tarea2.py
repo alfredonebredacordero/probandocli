@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""
-Juego de Cartas de Combate Solitario
-Autor: Assistant
-Descripción: Simulador de combate por rondas contra IAs enemigas
-"""
+
 import csv
 import sys
 import random
