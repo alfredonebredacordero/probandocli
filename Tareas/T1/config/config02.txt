@@ -1,4 +1,0 @@
-3
-tablero04.txt
-tablero09.txt
-tablero07.txt
