@@ -7,6 +7,7 @@ import JobDetailPage from './pages/JobDetailPage';
 import ProfilePage from './pages/ProfilePage';
 import WorkerDashboardPage from './pages/WorkerDashboardPage';
 import NotificationsPage from './pages/NotificationsPage';
+import ShopDashboardPage from './pages/ShopDashboardPage';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/dashboard" element={<WorkerDashboardPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/shop-dashboard" element={<ShopDashboardPage />} />
         {/* Add other routes here as we build them out */}
       </Routes>
     </Router>
