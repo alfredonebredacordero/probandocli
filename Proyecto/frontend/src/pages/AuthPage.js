@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   Mail, 
   Lock, 
@@ -13,9 +13,14 @@ import {
   Briefcase,
   Users
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const AuthPage = () => {
+  const { login, register } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const location = useLocation();
   const userType = new URLSearchParams(location.search).get('type') || 'worker';
 
@@ -30,12 +35,38 @@ const AuthPage = () => {
 
   const skipPath = userType === 'company' ? '/shop-dashboard' : '/jobs';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real app, this would authenticate with backend
-    console.log('Form submitted:', formData);
-    alert(`${isLogin ? 'Login' : 'Registration'} successful! (Demo)`);
-    navigate('/jobs');
+    setLoading(true);
+    setErrorMessage('');
+
+    try {
+      let result;
+      if (isLogin) {
+        // Login
+        result = await login(formData.email, formData.password);
+      } else {
+        // Register
+        result = await register({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: formData.userType,
+        });
+      }
+
+      if (result.success) {
+        // Navegar según el tipo de usuario
+        const path = formData.userType === 'shop' ? '/shop-dashboard' : '/dashboard';
+        navigate(path);
+      } else {
+        setErrorMessage(result.error || 'Authentication failed');
+      }
+    } catch (error) {
+      setErrorMessage(error.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleAuth = () => {
@@ -86,6 +117,13 @@ const AuthPage = () => {
               Sign Up
             </button>
           </div>
+
+          {/* Mensaje de error */}
+          {errorMessage && (
+            <div className="bg-red-500/20 border border-red-500 text-white p-3 rounded-lg mb-4">
+              {errorMessage}
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -202,9 +240,12 @@ const AuthPage = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-[#2EC4BC] hover:bg-[#24A09A] text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2 shadow-lg"
+              disabled={loading}
+              className="w-full bg-[#2EC4BC] hover:bg-[#24A09A] text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLogin ? (
+              {loading ? (
+                'Loading...'
+              ) : isLogin ? (
                 <>
                   <LogIn className="w-5 h-5" />
                   Login
